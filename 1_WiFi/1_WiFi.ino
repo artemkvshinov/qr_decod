@@ -1,12 +1,15 @@
 #include <WiFi.h>
 #include <ESPmDNS.h>
+#include <ESP32Ping.h>
 
 #define LED_ON_BORD 4
 
-char* WiFi_ssid = "MKASS";
-char* WiFi_password = "*MzVcT1#";
-char* Soft_AP_ssid = "KATYA";
-char* Soft_AP_password = "12345678";
+
+
+char WiFi_ssid        [32] = "MKASS";
+char WiFi_password    [32] = "*MzVcT1#";
+char Soft_AP_ssid     [32] = "KATYA";
+char Soft_AP_password [32] = "12345678";
 IPAddress local_IP(192, 168, 43, 100);
 // Укажите IP-адрес шлюза
 IPAddress gateway(192, 168, 0, 1);
@@ -37,5 +40,6 @@ void WiFi_start(){
     }
     delay(100);
   }
+  if(WiFi.waitForConnectResult() == WL_CONNECTED) Serial.println("\nWiFi Is Conect");
   digitalWrite(LED_ON_BORD, LOW);
 }
