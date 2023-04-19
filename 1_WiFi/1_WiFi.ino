@@ -1,45 +1,25 @@
-#include <WiFi.h>
-#include <ESPmDNS.h>
-#include <ESP32Ping.h>
+//настройки
+#define ENABLING_THE_ACCESS_POINT 1 //включть точку доступа если подключение к WiFi непроизошло
+/*
+ * если ENABLING_THE_ACCESS_POINT = 0 то
+ *    при поытке подключения к WiFi Esp32 зависает в бесконечном пока не подключится к WiFi 
+ * если ENABLING_THE_ACCESS_POINT = 1 то
+ *    при попытки подключения к WiFi запускается таймер
+ *    если через 10 секунд подключение к WiFi не устоновлено, включается точа доступа
+ */
+ 
+#define AUTOMATIC_CONNECTION_AFTER_WIFI_SCANNING 1
+/*
+ * если AUTOMATIC_CONNECTION_AFTER_WIFI_SCANNING = 0 то
+ *    после сканирования WiFi надо заново ввести команду "WiFi Reset" чтобы перезапустить WiFi
+ * если AUTOMATIC_CONNECTION_AFTER_WIFI_SCANNING = 1 то
+ *    после сканирования WiFi автоматический вызывается функция WiFi_start() которая перезапускает WiFi
+ */
 
-#define LED_ON_BORD 4
-
-
-
-char WiFi_ssid        [32] = "MKASS";
-char WiFi_password    [32] = "*MzVcT1#";
-char Soft_AP_ssid     [32] = "KATYA";
-char Soft_AP_password [32] = "12345678";
-IPAddress local_IP(192, 168, 43, 100);
-// Укажите IP-адрес шлюза
-IPAddress gateway(192, 168, 0, 1);
-
-IPAddress subnet(255, 255, 0, 0);
-IPAddress primaryDNS(8, 8, 8, 8);   // опционально
-IPAddress secondaryDNS(8, 8, 4, 4); // опционально
-
-
-
-
-
-void WiFi_start(){
-  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {  // Настраивает статический IP-адрес
-    Serial.println("STA Failed To Configure");
-  }
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WiFi_ssid, WiFi_password);                                     // Пытаемя подключится к точки достпупа
-  Serial.println("WiFi Connecting");
-  for (uint8_t i; WiFi.waitForConnectResult() != WL_CONNECTED; i++) {       // щетчик от 0 до 10сек кода настанет 10 сек мы поднимаем свою точку доступа
-    Serial.print(".");
-    digitalWrite(LED_ON_BORD, !digitalRead(LED_ON_BORD));
-    if (i == 100) {
-      Serial.println("\nWiFi Connect Failed!\nEnabling The Access Point!");
-      WiFi.mode(WIFI_AP);
-      WiFi.softAP(Soft_AP_ssid, Soft_AP_password);                          // поднимаем свою точку доступа
-      break;
-    }
-    delay(100);
-  }
-  if(WiFi.waitForConnectResult() == WL_CONNECTED) Serial.println("\nWiFi Is Conect");
-  digitalWrite(LED_ON_BORD, LOW);
-}
+#define AUTOMATIC_RESTART_WIFI_AFTER_WIFI_CONFIG 0
+/*
+ * если AUTOMATIC_RESTART_WIFI_AFTER_WIFI_CONFIG = 0 то
+ *    после ввода "Set WiFi SSID " "Set WiFi Password " "Set SoftAP SSID " "Set SoftAP Password " надо в ручную ввести "WiFi Reset" чтобы измененя вступили в силу
+ * если AUTOMATIC_RESTART_WIFI_AFTER_WIFI_CONFIG = 1 то
+ *    при вводе "Set WiFi SSID " "Set WiFi Password " "Set SoftAP SSID " "Set SoftAP Password " будет вызываться функция WiFi_start()
+ */
