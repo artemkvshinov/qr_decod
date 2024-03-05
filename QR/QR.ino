@@ -177,8 +177,8 @@ const long interval = 1000;
 /* ======================================== */
 
 /* ======================================== Replace with your network credentials */
-const char* ssid = "MKASS";
-const char* password = "*MzVcT1#";
+const char* ssid = "RT-WiFi-7325";
+const char* password = "MEyDziEFya";
 
 // Задайте свой статический IP-адрес
 IPAddress local_IP(192, 168, 1, 184);
